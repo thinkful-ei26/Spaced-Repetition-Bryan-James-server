@@ -36,8 +36,8 @@ app.use(
 );
 app.use(express.static('public'));
     
-app.use('/api', authRouter);// /login and /refresh routes here
-app.use('/api', regisRouter);// /register route here
+app.use('/api/auth', authRouter);// /login and /refresh routes here
+app.use('/api/', regisRouter);// /users route here
 
 
 //catch-all route:

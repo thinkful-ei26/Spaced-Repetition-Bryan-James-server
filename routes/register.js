@@ -9,7 +9,7 @@ const { checkUsernameAndPassword, trimName } = require('../utils/validate');
 //     res.send()
 // });
 
-regisRouter.post('/register', function(req, res, next){
+regisRouter.post('/users', function(req, res, next){
   let { firstName, lastName, username, password } = req.body;
     //validate username and password
     const isLegit = checkUsernameAndPassword([username, password]);
@@ -36,7 +36,7 @@ regisRouter.post('/register', function(req, res, next){
             return User.create(newUser);
         })
                 .then(result=>{
-            return res.status(201).location(`/register/${result.id}`).json(result);
+            return res.status(201).location(`/users/${result.id}`).json(result);
         })
         .catch(err =>{
             if(err.code === 11000){
