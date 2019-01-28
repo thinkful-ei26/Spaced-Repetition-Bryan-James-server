@@ -5,27 +5,45 @@ const cors = require('cors');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const passport = require('passport');
+const localStrategy = require('./passport/local');
+const jwtStrategy = require('./passport/jwt');
 const { PORT, CLIENT_ORIGIN } = require('./config');
 const { dbConnect } = require('./db-mongoose');
 // const {dbConnect} = require('./db-knex');
 const app = express();
+// Router handlers:
 const authRouter = require('./routes/auth');
+const regisRouter = require('./routes/register');
 
-
+mongoose.Promise = global.Promise;
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useCreateIndex', true);
 mongoose.set('autoIndex', false);
+
+passport.use(localStrategy);
+passport.use(jwtStrategy);
+app.use(express.json());
 app.use(
   morgan(process.env.NODE_ENV === 'production' ? 'common' : 'dev', {
     skip: (req, res) => process.env.NODE_ENV === 'test'
   })
-);
-
+  );
+  
 app.use(
-  cors({
-    origin: CLIENT_ORIGIN
-  })
+    cors({
+      origin: CLIENT_ORIGIN
+    })
 );
+app.use(express.static('public'));
+    
+app.use('/api', authRouter);// /login and /refresh routes here
+app.use('/api', regisRouter);// /register route here
+
+
+//catch-all route:
+app.use('*', (req, res, next) => {
+  return res.status(404).json({ message: 'Not Found' });
+});
 
 function runServer(port = PORT) {
   const server = app
