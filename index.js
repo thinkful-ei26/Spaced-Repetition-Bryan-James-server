@@ -3,13 +3,18 @@
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
-
+const mongoose = require('mongoose');
+const passport = require('passport');
 const { PORT, CLIENT_ORIGIN } = require('./config');
 const { dbConnect } = require('./db-mongoose');
 // const {dbConnect} = require('./db-knex');
-
 const app = express();
+const authRouter = require('./routes/auth');
 
+
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useCreateIndex', true);
+mongoose.set('autoIndex', false);
 app.use(
   morgan(process.env.NODE_ENV === 'production' ? 'common' : 'dev', {
     skip: (req, res) => process.env.NODE_ENV === 'test'

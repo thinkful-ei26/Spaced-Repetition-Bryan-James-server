@@ -17,15 +17,19 @@
   "dependencies": {
     "cors": "^2.8.4",
     "express": "^4.16.3",
-    "knex": "^0.15.2",
-    "mongoose": "^5.2.6",
-    "morgan": "^1.9.0",
+    "jsonwebtoken": "^8.4.0",
+    "knex": "^0.16.3",
+    "mongoose": "^5.4.7",
+    "morgan": "^1.9.1",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0",
     "pg": "^7.4.3"
   },
   "devDependencies": {
     "chai": "^4.1.2",
     "chai-http": "^4.0.0",
     "mocha": "^5.2.0",
-    "nyc": "^12.0.2"
+    "nyc": "^13.1.0"
   }
 }
