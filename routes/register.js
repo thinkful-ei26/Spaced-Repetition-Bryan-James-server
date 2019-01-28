@@ -10,7 +10,7 @@ const { checkUsernameAndPassword, trimName } = require('../utils/validate');
 // });
 
 regisRouter.post('/register', function(req, res, next){
-  let { name, username, password } = req.body;
+  let { firstName, lastName, username, password } = req.body;
     //validate username and password
     const isLegit = checkUsernameAndPassword([username, password]);
     if(!isLegit.good){
@@ -19,12 +19,14 @@ regisRouter.post('/register', function(req, res, next){
         return next(err);
     }
     
-    name = trimName(name);
-    //let testArray = [username, name];
+    firstName = trimName(firstName);
+    lastName = trimName(lastName);
+  
     return User.hashPassword(password)
         .then(digest=> {
             const newUser = {
-               "name" : name,
+                "firstName" : firstName,
+                "lastName" : lastName,
                 "username": username,
                 "password": digest
             };
