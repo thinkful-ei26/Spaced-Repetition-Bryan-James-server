@@ -8,15 +8,15 @@ const usersSchema = new mongoose.Schema({
   password: { type: String, required: true },
   questionPool: [
     { timesCorrect: Number, timesWrong: Number },
-    { timesCorrect: Number, timesWrong: Number },
-    { timesCorrect: Number, timesWrong: Number },
-    { timesCorrect: Number, timesWrong: Number },
-    { timesCorrect: Number, timesWrong: Number },
-    { timesCorrect: Number, timesWrong: Number },
-    { timesCorrect: Number, timesWrong: Number },
-    { timesCorrect: Number, timesWrong: Number },
-    { timesCorrect: Number, timesWrong: Number },
-    { timesCorrect: Number, timesWrong: Number },
+    // { timesCorrect: Number, timesWrong: Number },
+    // { timesCorrect: Number, timesWrong: Number },
+    // { timesCorrect: Number, timesWrong: Number },
+    // { timesCorrect: Number, timesWrong: Number },
+    // { timesCorrect: Number, timesWrong: Number },
+    // { timesCorrect: Number, timesWrong: Number },
+    // { timesCorrect: Number, timesWrong: Number },
+    // { timesCorrect: Number, timesWrong: Number },
+    // { timesCorrect: Number, timesWrong: Number },
   ],
   levelTwoQuestionPool: [
     {
@@ -31,9 +31,9 @@ const usersSchema = new mongoose.Schema({
 usersSchema.set('toJSON', {
   virtuals: true, // include built-in virtual `id`
   transform: (doc, result) => {
-    delete result._id
-    delete result.__v
-    delete result.password
+    delete result._id;
+    delete result.__v;
+    delete result.password;
   },
 })
 
