@@ -14,8 +14,9 @@ const app = express()
 // Router handlers:
 const authRouter = require('./routes/auth')
 const regisRouter = require('./routes/register')
+const questionRouter = require('./routes/questions');
 
-mongoose.Promise = global.Promise
+mongoose.Promise = global.Promise;
 mongoose.set('useNewUrlParser', true)
 mongoose.set('useCreateIndex', true)
 mongoose.set('autoIndex', false)
@@ -38,6 +39,7 @@ app.use(express.static('public'))
 
 app.use('/api/auth', authRouter) // /login and /refresh routes here
 app.use('/api/', regisRouter) // /users route here
+app.use('/api/', questionRouter); // /next and /data routes here
 
 //catch-all route:
 app.use('*', (req, res, next) => {

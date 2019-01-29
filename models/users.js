@@ -7,7 +7,7 @@ const usersSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   questionPool: [
-    { timesCorrect: Number, timesWrong: Number },
+    { someIndex: Number, timesCorrect: Number, timesWrong: Number },
     // { timesCorrect: Number, timesWrong: Number },
     // { timesCorrect: Number, timesWrong: Number },
     // { timesCorrect: Number, timesWrong: Number },
