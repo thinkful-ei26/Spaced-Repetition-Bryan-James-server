@@ -40,6 +40,9 @@ usersSchema.set('toJSON', {
 usersSchema.methods.serialize = function() {
   return { username: this.username, name: this.name }
 }
+usersSchema.methods.serialQuestion = function(){
+  return { questions : this.questions, head : this.head};
+}
 
 usersSchema.methods.validatePassword = function(AttemptedPassword) {
   return bcrypt.compare(AttemptedPassword, this.password)
