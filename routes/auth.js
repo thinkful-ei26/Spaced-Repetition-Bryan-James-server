@@ -3,6 +3,7 @@ const passport = require('passport');
 const { JWT_SECRET, JWT_EXPIRY } = require('../config');
 const jwt = require('jsonwebtoken');
 const authRouter = express.Router();
+const User = require('../models/users');
 
 function createAuthToken(user) {
   return jwt.sign({ user }, JWT_SECRET, {
@@ -25,4 +26,13 @@ authRouter.post('/refresh', jwtAuth, (req, res) => {
   return res.json({ authToken });
 });
 
+authRouter.delete('/:id', jwtAuth, (req, res)=>{
+  const userId = req.user.id;
+  return User.findByIdAndDelete(userId)
+  .then(()=>res.sendStatus(204))
+  .catch((err)=>{
+    //console.log(err)
+    res.sendStatus(400);
+  });
+});
 module.exports = authRouter;

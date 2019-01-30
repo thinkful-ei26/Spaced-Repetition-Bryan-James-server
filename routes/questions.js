@@ -1,7 +1,7 @@
 const express = require('express');
 const questionRouter = express.Router();
 const User = require('../models/users');
-const Question = require('../models/questionData');
+//const Question = require('../models/questionData');
 const passport = require('passport');
 
 //file is for /next and /data routes
@@ -19,11 +19,11 @@ questionRouter.post('/data', (req, res, next)=>{
   return User.findOne({"_id": userId})
   .then((currentUser)=>{
     let qArray = [...currentUser.questions];
-    let updatePackage = {head: qArray[whichQuestion].next, questions: qArray};
+    let bananas = qArray[whichQuestion].next;// next is a primal number so bananas===copy of number not a mutation
+    let updatePackage = {head: bananas, questions: qArray};
     //here we have the User question array,
     let theRight = qArray[whichQuestion].Answer;
     if(answer===theRight.toLowerCase()){
-      let bananas = qArray[whichQuestion].next;
         //here the user has answered currentUser.questions[whichQuestion] correctly
         //currentUser.questions[whichQuestion].m set to double it's value or array's length
       let newMValue = qArray[whichQuestion].m *2;
@@ -46,7 +46,7 @@ questionRouter.post('/data', (req, res, next)=>{
       //find where is new spot <-- found it
       let indexOfNewSpot = whichQuestion;
       let tempIndex = qArray[whichQuestion].id;
-      for(let i = qArray[whichQuestion].id; i < newMValue; i++){//going to work?
+      for(let i = qArray[whichQuestion].id; i < qArray[whichQuestion].id + newMValue; i++){//going to work?
         //start at current question node
         // loop M times (from 0 to 1,2,4,8,10) @20 20>length 10 ->> becomes = 10 (Line30)
         // tempIndex++;
@@ -56,8 +56,10 @@ questionRouter.post('/data', (req, res, next)=>{
           tempIndex = tempIndex - qArray.length;
         }
         indexOfNewSpot = qArray[tempIndex].next;
+        //console.log("inside loop:", indexOfNewSpot);
       }
-      //console.log("the index: ", indexOfNewSpot);
+      //console.log("outside loop:", indexOfNewSpot);
+      
       let captureNewSpotQuestion = qArray[indexOfNewSpot];
       //3: head points to current next before the shifting spots re-organize<-- check (Line22)
       // 
@@ -65,6 +67,8 @@ questionRouter.post('/data', (req, res, next)=>{
       qArray[whichQuestion].next = captureNewSpotQuestion.next;
       //5: change question at M spots down to next points to this question id <-- check
       captureNewSpotQuestion.next = currentUser.questions[whichQuestion].id;
+      //console.log("here spot what is what: ", captureNewSpotQuestion);
+      //console.log("here spot what is what next: ", captureNewSpotQuestion.next);
       //changes done to array and head now update the user in mongo:<-- check
       for(let i = 0; i < qArray.length; i++){
         //going thru the whole array
@@ -79,11 +83,46 @@ questionRouter.post('/data', (req, res, next)=>{
    
     } else {
       replyMessage = {"feedback": `Sorry the correct answer is: ${theRight}`};
-      //do logic for m Value and put re-arrangement into updatePacke here
+      /* *** in-scope variables:    
+      *
+      *   qArray         an array of the current logged in user's questions (length of 10)
+      *   updatePackage   an object for updating the MongoDB, has head already set to next question
+      *   whichQuestion     the index number of the just-been-answered question
+      *   bananas         current question next Number value copied not mutant
+      */ 
       // here the user has answered incorrectly
-      // reset currentUser.questions[whichQuestion].m = 1;
-      // move the questions m spaces in the list,
+      // to do list: 
+      // 1. reset currentUser.questions[whichQuestion].m = 1;
+      qArray[whichQuestion].m = 1;
+      // 2. move the current question m spaces in the list,
+      let helperIndexValue = qArray[whichQuestion].id;// copy of number not a mutant, i think
+      let captureNewSpot = null;
+      for(let i = qArray[whichQuestion].id; i < qArray[whichQuestion].id + 1; i++){
+        captureNewSpot = qArray[helperIndexValue].next;
+        helperIndexValue++;
+        if(helperIndexValue >= qArray.length){
+          // 2a. if end of list wrap around to begin of list, don't over-index the range of array
+          helperIndexValue = 0;
+        }
+      }
+      // 3. find the spot to move to and capture it for changing it's next to current question
+      let newSpotToMoveTo = qArray[captureNewSpot];// mutant not value
 
+      let helperNextSpot = newSpotToMoveTo.next;//value not mutant
+      newSpotToMoveTo.next = qArray[whichQuestion].id;
+      let OldCurrentNext = qArray[whichQuestion].next;
+      qArray[whichQuestion].next = helperNextSpot;
+      // 4. find the question that was previously nexting' the currentWrong and change it's next to 
+      //      the old current next
+      //   [0,1,2,3,4,5]   // 2 is going to move to after 3
+      //   [0,1,-,3, 2, 4,5]  //need 1 to next to 3 not 2(that would skip over 3 forever)
+      for(let i = 0; i < qArray.length; i++){
+        if((qArray[i].next === qArray[whichQuestion].id)&& (!Object.is(qArray[i], newSpotToMoveTo))){
+          //here is spot 1 and not spot 3, set to 2's old next which was 3
+          qArray[i].next = OldCurrentNext;
+        }
+      }
+      // 5. ???
     }
     return User.findOneAndUpdate({_id: userId}, updatePackage, {new:true, $set: 1})
         .then(()=>res.json(replyMessage))
@@ -114,8 +153,8 @@ questionRouter.post('/next', (req, res, next)=>{
     let nextQIndex = theUser.questions[nextQuestionIndex];
     return res.json(nextQIndex);//send client the next question from the index they sent us
   })
-  .catch(()=>{
-    return res.sendStatus(400);
+  .catch((err)=>{
+    return next(err);
   });
   
 });
