@@ -8,10 +8,11 @@ const usersSchema = new mongoose.Schema({
   password: { type: String, required: true },
   questions: [
     { _id: mongoose.Schema.Types.ObjectId,
-       question: String,
-        answer: String,
+       Question: String,
+        Answer: String,
         m : Number,
-        next : Number
+        next : Number,
+        id: Number
     }],
   head: {
          type : Number,
