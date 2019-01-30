@@ -6,18 +6,17 @@ const usersSchema = new mongoose.Schema({
   lastName: { type: String, required: true },
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  questionPool: [
-    { someIndex: Number, timesCorrect: Number, timesWrong: Number },
-    // { timesCorrect: Number, timesWrong: Number },
-    // { timesCorrect: Number, timesWrong: Number },
-    // { timesCorrect: Number, timesWrong: Number },
-    // { timesCorrect: Number, timesWrong: Number },
-    // { timesCorrect: Number, timesWrong: Number },
-    // { timesCorrect: Number, timesWrong: Number },
-    // { timesCorrect: Number, timesWrong: Number },
-    // { timesCorrect: Number, timesWrong: Number },
-    // { timesCorrect: Number, timesWrong: Number },
-  ],
+  questions: [
+    { _id: mongoose.Schema.Types.ObjectId,
+       question: String,
+        answer: String,
+        m : Number,
+        next : Number
+    }],
+  head: {
+         type : Number,
+         default: 0
+       },
   levelTwoQuestionPool: [
     {
       question: { type: mongoose.Schema.Types.String, ref: 'Question' },
@@ -26,7 +25,7 @@ const usersSchema = new mongoose.Schema({
     },
     // Dynamically populated from a db of 100 questions. Will have a seed utility that generates 10 questions from base dataset and pushes those to a linked list
   ],
-})
+});
 
 usersSchema.set('toJSON', {
   virtuals: true, // include built-in virtual `id`
