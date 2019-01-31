@@ -172,7 +172,7 @@ regisRouter.post('/users', function(req, res, next){
                     ]});
                 })
                     .then((newData)=>{
-                        return res.status(201).location(`/users/${newData.id}`).json(newData);
+                        return res.status(201).location(`/users/${newData.id}`).json(newData.serialNoAnswer());
                    
         })
         .catch(err =>{

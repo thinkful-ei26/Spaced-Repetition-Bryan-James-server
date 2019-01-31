@@ -50,7 +50,7 @@ questionRouter.post('/data', (req, res, next)=>{
         //start at current question node
         // loop M times (from 0 to 1,2,4,8,10) @20 20>length 10 ->> becomes = 10 (Line30)
         // tempIndex++;
-        console.log("M:", newMValue);
+        //console.log("M:", newMValue);
         tempIndex = tempIndex +1;
         //console.log("the incrementer: ", tempIndex);
         if(tempIndex >= qArray.length){
@@ -129,7 +129,7 @@ questionRouter.post('/data', (req, res, next)=>{
     }
     return User.findOneAndUpdate({_id: userId}, updatePackage, {new:true, $set: 1})
         .then(()=>res.json(replyMessage))
-        .catch(err=>console.log("sad face ", err));
+        .catch(err=>next(err));
     });
 });
 
@@ -144,6 +144,7 @@ questionRouter.post('/next', (req, res, next)=>{
     return User.findOne({_id: userId})//returns 10 questions from mLab
     .then((theUser)=>{
       let firstQuestion = theUser.questions[theUser.head];
+      firstQuestion.Answer = null;
       return res.json(firstQuestion);//send client the question at the head of their list
     })
     .catch(()=>{});
@@ -154,7 +155,7 @@ questionRouter.post('/next', (req, res, next)=>{
   return User.findOneAndUpdate({_id:userId}, {head: nextQuestionIndex}, {new:true, $set:1})
   .then((theUser)=>{
     let nextQIndex = theUser.questions[nextQuestionIndex];
-  
+    nextQIndex.Answer =null;
     return res.json(nextQIndex);//send client the next question from the index they sent us
   })
   .catch((err)=>{
@@ -166,7 +167,12 @@ questionRouter.post('/all', (req,res, next)=>{
   const userId = req.user.id;
   // get current users' questions from questionPool
   return User.findOne({_id: userId})
-  .then(results=> res.json(results.questions))
+  .then(results=> {
+    //console.log("here, first", results);
+   // console.log("here, then 2nd", results.serialNoAnswer());
+    let filtered = [...results.serialNoAnswer().questions];
+   return res.json(filtered);
+  })
   .catch(err=>next(err));
 });
 
@@ -247,7 +253,7 @@ questionRouter.get('/reset', (req, res, next)=>{
   ]};
   return User.findByIdAndUpdate(userId, freshArray, {new: true, $set: 1})
   .then((response)=>{
-    return res.json(response.serialQuestion());
+    return res.json(response.serialNoAnswer());
   })
   .catch(err=>next(err));
 });

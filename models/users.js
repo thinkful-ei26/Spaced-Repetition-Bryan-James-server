@@ -44,9 +44,12 @@ usersSchema.methods.serialQuestion = function(){
   return { questions : this.questions, head : this.head};
 }
 usersSchema.methods.serialNoAnswer = function(){
-  let noCheat = this.questions.map(item=> delete item.Answer);
-  return {questions: noCheat, head: this.head};
-}
+  let noCheat = this.questions.map(item=> {
+    item.Answer = null;
+    return item;
+  });
+  return ({questions: noCheat, head: this.head});
+};
 
 usersSchema.methods.validatePassword = function(AttemptedPassword) {
   return bcrypt.compare(AttemptedPassword, this.password)
