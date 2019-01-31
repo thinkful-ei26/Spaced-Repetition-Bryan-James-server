@@ -103,9 +103,9 @@ regisRouter.post('/users', function(req, res, next){
                         'Question': 'A Python data type that holds an ordered collection of values, which can be of any type. This is equivalant to an "array" in many other languages. Python <blank>s are "mutable," implying that they can be changed once created.',
                         'Answer': 'list',
                         m: 1,
-                        next: 1,
-                        id: 0
-                      },
+                        next: 3,
+                        id: 0,
+                       },
                       {
                         'Question': '<blank>s are assigned values using the = operator, which is not to be confused with the == sign used for testing equality. A <blank> can hold almost any type of value such as lists, dictionaries, functions.',
                         'Answer': 'variable',
@@ -117,7 +117,7 @@ regisRouter.post('/users', function(req, res, next){
                         'Question': 'Python builds <blank>s using the syntax: def <blank>_name(variable): <blank>s can be stand-alone or can return values. <blank>s can also contain other functions.',
                         'Answer': 'function',
                         m: 1,
-                        next: 3,
+                        next: 0,
                         id:2
                       },
                       {
@@ -166,7 +166,7 @@ regisRouter.post('/users', function(req, res, next){
                         'Question': 'Name given to the class that is being inherited from',
                         'Answer': 'superclass',
                         m: 1,
-                        next: 0,
+                        next: 1,
                         id:9
                       }
                     ]});

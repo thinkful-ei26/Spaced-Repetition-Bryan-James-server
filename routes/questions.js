@@ -32,9 +32,9 @@ questionRouter.post('/data', (req, res, next)=>{
       }
       // update the m value =newMValue<-- check
       qArray[whichQuestion].m = newMValue;
-      let mSpotsDownTheList = qArray[whichQuestion].id + newMValue;
+      let mSpotsDownTheList = /*qArray[whichQuestion].id +*/ newMValue;
       //          [0, 1, 2, 3, 4, 5, 6,..., len]
-      //          [-, 1, 2, 0, 3, 4, 5, 6,..., 8] 
+      //          [1, 2, 0 , 3, 4,5, 6,7,  8, 9] m4 +2
       // problem is 8 is still .nexting to 0 instead of to 1 now,
       //skipping 1 and 2 on following loops
       //          [6, 0, 1, 2, 3, 4, 5, -,7, 8]
@@ -46,16 +46,17 @@ questionRouter.post('/data', (req, res, next)=>{
       //find where is new spot <-- found it
       let indexOfNewSpot = whichQuestion;
       let tempIndex = qArray[whichQuestion].id;
-      for(let i = qArray[whichQuestion].id; i < qArray[whichQuestion].id + newMValue; i++){//going to work?
+      for(let i = 0; i < newMValue; i++){//going to work?
         //start at current question node
         // loop M times (from 0 to 1,2,4,8,10) @20 20>length 10 ->> becomes = 10 (Line30)
         // tempIndex++;
+        console.log("M:", newMValue);
         tempIndex = tempIndex +1;
         //console.log("the incrementer: ", tempIndex);
         if(tempIndex >= qArray.length){
           tempIndex = tempIndex - qArray.length;
         }
-        indexOfNewSpot = qArray[tempIndex].next;
+        indexOfNewSpot = qArray[tempIndex].id;
         //console.log("inside loop:", indexOfNewSpot);
       }
       //console.log("outside loop:", indexOfNewSpot);
@@ -67,6 +68,8 @@ questionRouter.post('/data', (req, res, next)=>{
       qArray[whichQuestion].next = captureNewSpotQuestion.next;
       //5: change question at M spots down to next points to this question id <-- check
       captureNewSpotQuestion.next = currentUser.questions[whichQuestion].id;
+      //qArray[whichQuestion].id = captureNewSpotQuestion.id + 1;
+
       //console.log("here spot what is what: ", captureNewSpotQuestion);
       //console.log("here spot what is what next: ", captureNewSpotQuestion.next);
       //changes done to array and head now update the user in mongo:<-- check
@@ -75,7 +78,7 @@ questionRouter.post('/data', (req, res, next)=>{
         if((qArray[i].next === qArray[whichQuestion].id)&& (!Object.is(qArray[i], captureNewSpotQuestion))){
           //found it
           qArray[i].next = bananas;
-          //          [-, 1, 2, 0*, 3, 4, 5, 6,..., 8] <-- found 8 which is .next 0
+          //          [- 1, 2,0, 3, 4, 5, ,..., 8] <-- found 8 which is .next 0
       // problem is 8 is still .nexting to 0 instead of to 1 now,
       // 0's old .next was 1, then 2 etc, now 8.next = 1 so questions dont get cut out of line
         }
@@ -148,9 +151,10 @@ questionRouter.post('/next', (req, res, next)=>{
   // here the question from the client is for the next question after they are currently on.
   // do validate req.body.question here
   
-  return User.findOne({_id:userId})
+  return User.findOneAndUpdate({_id:userId}, {head: nextQuestionIndex}, {new:true, $set:1})
   .then((theUser)=>{
     let nextQIndex = theUser.questions[nextQuestionIndex];
+  
     return res.json(nextQIndex);//send client the next question from the index they sent us
   })
   .catch((err)=>{
