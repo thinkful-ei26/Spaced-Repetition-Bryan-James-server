@@ -9,7 +9,9 @@ Easy as Python is an easy to use app for memorizing some Python code. Users can 
 ### Links
 
 [Github repo for server:](https://github.com/thinkful-ei26/Spaced-Repetition-Bryan-James-server)
+
 [Github for client:](https://github.com/thinkful-ei26/Spaced-Repetition-Bryan-James-Client)
+
 [Live deploy at:](https://bryan-james-learn-python.herokuapp.com/)
 
 ### Working on the project
