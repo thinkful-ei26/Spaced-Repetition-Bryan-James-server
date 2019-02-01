@@ -40,9 +40,6 @@ usersSchema.set('toJSON', {
 usersSchema.methods.serialize = function() {
   return { username: this.username, name: this.name }
 }
-usersSchema.methods.serialQuestion = function(){
-  return { questions : this.questions, head : this.head};
-}
 usersSchema.methods.serialNoAnswer = function(){
   let noCheat = this.questions.map(item=> {
     item.Answer = null;
@@ -50,7 +47,20 @@ usersSchema.methods.serialNoAnswer = function(){
   });
   return ({questions: noCheat, head: this.head});
 };
-
+usersSchema.methods.serialNoAnswerButAllUserInfo = function(){
+  let noCheat = this.questions.map(item=> {
+    item.Answer = null;
+    return item;
+  });
+  return ({questions: noCheat,
+     id: this._id,
+     head: this.head,
+     firstName : this.firstName,
+     lastName : this.lastName,
+     username : this.username,
+     levelTwoQuestionPool : this.levelTwoQuestionPool,
+    });
+};
 usersSchema.methods.validatePassword = function(AttemptedPassword) {
   return bcrypt.compare(AttemptedPassword, this.password)
 }

@@ -168,10 +168,8 @@ questionRouter.post('/all', (req,res, next)=>{
   // get current users' questions from questionPool
   return User.findOne({_id: userId})
   .then(results=> {
-    //console.log("here, first", results);
-   // console.log("here, then 2nd", results.serialNoAnswer());
     let filtered = [...results.serialNoAnswer().questions];
-   return res.json(filtered);
+    return res.json(filtered);
   })
   .catch(err=>next(err));
 });

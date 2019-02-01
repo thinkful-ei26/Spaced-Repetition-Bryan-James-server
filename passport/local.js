@@ -19,7 +19,7 @@ const localStrategy = new LocalStrategy((username, password, done) => {
           status: 401,
         })
       }
-      return done(null, user)
+      return done(null, user.serialNoAnswerButAllUserInfo());
     })
     .catch(err => {
       if (err.reason === 'LoginError') {

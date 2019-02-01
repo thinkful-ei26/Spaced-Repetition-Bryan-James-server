@@ -18,25 +18,10 @@ process.stdout.write('\x1Bc\n');
 const expect = chai.expect;
 chai.use(chaiHttp);
 
-const firstName = 'Test';
-const lastName = 'Test';
-const username = 'Test';
-const password = '1234567890';
-let scopeUser = null;
 before(function() {
   return dbConnect(TEST_DATABASE_URL)
   .then(()=> {
-    User.deleteMany()
-    .then(()=>{
-      return chai.request(app)
-      .post('/api/users')
-      .send({ firstName, lastName, username, password});
-    })
-    .then(testUser=>{
-      //let token = somethinglike testUser.authToken;
-      scopeUser = testUser.json();
-      return;
-    });
+    User.deleteMany();
   });
 });
 
@@ -58,9 +43,33 @@ describe('Mocha and Chai', function() {
   });
 });
 describe('The Questions routes!!', function(){
+
+  const firstName = 'Test';
+  const lastName = 'Test';
+  const username = 'Test';
+  const password = '1234567890';
+  let scopeUser = null;
+
+
   it('Should make me a sandwich', function(){
-    console.log("Hello first test");
-    console.log("Hello ", scopeUser);
-    //expect('a sandwich').to.be.tasty;
+    
+ 
+    return chai.request(app)
+    .post('/api/users')
+    .send({ firstName, lastName, username, password})
+      .then(testUser=>{
+    //let token = somethinglike testUser.authToken;
+      scopeUser = testUser.body;
+      console.log("Hello first test");
+      //console.log("Hello ", scopeUser);
+      //expect('a sandwich').to.be.tasty;
+    });
+
   });
+
+
+
+
+
+
 });
