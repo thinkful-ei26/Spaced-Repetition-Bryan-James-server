@@ -31,9 +31,9 @@ questionRouter.post('/data', (req, res, next)=>{
       qArray[whichQuestion].m = 1;
       newMValue = 1;
     }
-      let mSpotsDownTheList = newMValue;
-     if(mSpotsDownTheList >= qArray.length){
-        mSpotsDownTheList -= qArray.length;
+     
+     if( newMValue>= qArray.length){
+      newMValue -= qArray.length;
       }
       let indexOfNewSpot = whichQuestion;
       let tempIndex = qArray[whichQuestion].id;
