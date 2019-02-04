@@ -11,32 +11,32 @@ questionRouter.post('/data', (req, res, next)=>{
   // this route handles algorithm logic
   const userId = req.user.id;
   const answer = req.body.Answer;
-  const whichQuestion = req.body.id;
+  const indexOfCurrentQuestion = req.body.id;
   let replyMessage = {"feedback": "Correct"};
   return User.findOne({"_id": userId})
   .then((currentUser)=>{
     let qArray = [...currentUser.questions];
-    let newHeadValue = qArray[whichQuestion].next;
+    let newHeadValue = qArray[indexOfCurrentQuestion].next;
     let updatePackage = {head: newHeadValue, questions: qArray};
-    let theRight = qArray[whichQuestion].Answer;
+    let theRight = qArray[indexOfCurrentQuestion].Answer;
     let newMValue;
     if(answer===theRight.toLowerCase()){
-      newMValue = qArray[whichQuestion].m *2;
+      newMValue = qArray[indexOfCurrentQuestion].m *2;
       if(newMValue >= qArray.length){
         newMValue = qArray.length;
       }
-      qArray[whichQuestion].m = newMValue;
+      qArray[indexOfCurrentQuestion].m = newMValue;
     }else {
       replyMessage = {"feedback": `Sorry the correct answer is: ${theRight}`};
-      qArray[whichQuestion].m = 1;
+      qArray[indexOfCurrentQuestion].m = 1;
       newMValue = 1;
     }
      
      if( newMValue>= qArray.length){
       newMValue -= qArray.length;
       }
-      let indexOfNewSpot = whichQuestion;
-      let tempIndex = qArray[whichQuestion].id;
+      let indexOfNewSpot = indexOfCurrentQuestion;
+      let tempIndex = qArray[indexOfCurrentQuestion].id;
       for(let i = 0; i < newMValue; i++){
        tempIndex = tempIndex +1;
         if(tempIndex >= qArray.length){
@@ -45,10 +45,10 @@ questionRouter.post('/data', (req, res, next)=>{
         indexOfNewSpot = qArray[tempIndex].id;
       }
       let captureNewSpotQuestion = qArray[indexOfNewSpot];
-      qArray[whichQuestion].next = captureNewSpotQuestion.next;
-      captureNewSpotQuestion.next = currentUser.questions[whichQuestion].id;
+      qArray[indexOfCurrentQuestion].next = captureNewSpotQuestion.next;
+      captureNewSpotQuestion.next = currentUser.questions[indexOfCurrentQuestion].id;
       for(let i = 0; i < qArray.length; i++){
-        if((qArray[i].next === qArray[whichQuestion].id)&& (!Object.is(qArray[i], captureNewSpotQuestion))){
+        if((qArray[i].next === qArray[indexOfCurrentQuestion].id)&& (!Object.is(qArray[i], captureNewSpotQuestion))){
           qArray[i].next = newHeadValue;
         }
       }
